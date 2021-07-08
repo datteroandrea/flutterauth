@@ -18,6 +18,28 @@ class SignupPageState extends State<SignupPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  Icon isPasswordCorrect = Icon(
+    Icons.close,
+    color: Color.fromRGBO(235, 59, 90, 1.0),
+  );
+  String message = "";
+
+  void checkPasswordCorrect() {
+    setState(() {
+      if (passwordController.text.compareTo(confirmPasswordController.text) ==
+          0) {
+        isPasswordCorrect = Icon(
+          Icons.done,
+          color: Color.fromRGBO(32, 191, 107, 1.0),
+        );
+      } else {
+        isPasswordCorrect = Icon(
+          Icons.close,
+          color: Color.fromRGBO(235, 59, 90, 1.0),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +112,16 @@ class SignupPageState extends State<SignupPage> {
                   SizedBox(
                     height: 50,
                   ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Text(
+                      message,
+                      style: TextStyle(color: Color.fromRGBO(235, 59, 90, 1.0)),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   SizedBox(
                     width: 300,
                     child: TextFormField(
@@ -151,6 +183,9 @@ class SignupPageState extends State<SignupPage> {
                   SizedBox(
                     width: 300,
                     child: TextFormField(
+                      onChanged: (String pass) {
+                        checkPasswordCorrect();
+                      },
                       controller: passwordController,
                       obscureText: true,
                       autocorrect: false,
@@ -158,6 +193,7 @@ class SignupPageState extends State<SignupPage> {
                       style:
                           TextStyle(color: Color.fromRGBO(56, 103, 214, 1.0)),
                       decoration: InputDecoration(
+                        suffixIcon: isPasswordCorrect,
                         labelText: 'Password',
                         labelStyle:
                             TextStyle(color: Color.fromRGBO(56, 103, 214, 1.0)),
@@ -184,6 +220,9 @@ class SignupPageState extends State<SignupPage> {
                   SizedBox(
                     width: 300,
                     child: TextFormField(
+                      onChanged: (String pass) {
+                        checkPasswordCorrect();
+                      },
                       controller: confirmPasswordController,
                       obscureText: true,
                       autocorrect: false,
@@ -191,6 +230,7 @@ class SignupPageState extends State<SignupPage> {
                       style:
                           TextStyle(color: Color.fromRGBO(56, 103, 214, 1.0)),
                       decoration: InputDecoration(
+                        suffixIcon: isPasswordCorrect,
                         labelText: 'Confirm Password',
                         labelStyle:
                             TextStyle(color: Color.fromRGBO(56, 103, 214, 1.0)),
@@ -228,14 +268,20 @@ class SignupPageState extends State<SignupPage> {
                           caseSensitive: false,
                           multiLine: false,
                         );
-                        if (password.compareTo(confirmPassword) == 0 &&
-                            regExp.hasMatch(password)) {
-                          // password match the regex and are equal
-                          signup(username, email, password);
+                        if (password.compareTo(confirmPassword) == 0) {
+                          if (regExp.hasMatch(password)) {
+                            signup(username, email, password);
+                          } else {
+                            setState(() {
+                              message =
+                                  "Password is too short!\nMake sure it's at least 8 characters including a number, an uppercase letter and a lowercase letter.";
+                            });
+                          }
                         } else {
-                          // password doesn't match the regex or the passwords are different
-                          print(password);
-                          print("Errore password non valida");
+                          setState(() {
+                            message =
+                                "Password and Confirm Password are not the same";
+                          });
                         }
                       },
                       child: Text("Sign up!",
