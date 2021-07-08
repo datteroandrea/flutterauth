@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:template/authentication/auth.dart';
+import 'package:template/pages/forgotpassword.dart';
 import 'package:template/pages/mainpage.dart';
 import 'package:template/pages/signup.dart';
 import 'package:template/constants.dart';
@@ -15,6 +16,7 @@ class SigninPage extends StatefulWidget {
 class SigninPageState extends State<SigninPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  String errorMessage = "";
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +89,13 @@ class SigninPageState extends State<SigninPage> {
                 SizedBox(
                   height: 50,
                 ),
+                Text(
+                  errorMessage,
+                  style: TextStyle(color: Color.fromRGBO(235, 59, 90, 1.0)),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
                 SizedBox(
                   width: 300,
                   child: TextFormField(
@@ -144,12 +153,36 @@ class SigninPageState extends State<SigninPage> {
                   ),
                 ),
                 SizedBox(height: 10.0),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 50),
+                    child: TextButton(
+                      child: Text("Forgot password?",
+                          style: TextStyle(
+                              color: Color.fromRGBO(56, 103, 214, 1.0))),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ForgotPasswordPage()));
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.0),
                 SizedBox(
                     height: 50.0,
                     width: 300,
                     child: TextButton(
                       onPressed: () async {
-                        signin(emailController.text, passwordController.text);
+                        String? res = await signin(
+                            emailController.text, passwordController.text);
+                        if (res != null) {
+                          setState(() {
+                            errorMessage = res;
+                          });
+                        }
                       },
                       child:
                           Text("Login", style: TextStyle(color: Colors.white)),
