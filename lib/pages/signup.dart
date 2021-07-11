@@ -271,6 +271,10 @@ class SignupPageState extends State<SignupPage> {
                         if (password.compareTo(confirmPassword) == 0) {
                           if (regExp.hasMatch(password)) {
                             signup(username, email, password);
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SigninPage()));
                           } else {
                             setState(() {
                               message =
