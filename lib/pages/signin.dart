@@ -182,6 +182,11 @@ class SigninPageState extends State<SigninPage> {
                           setState(() {
                             errorMessage = res;
                           });
+                        } else {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()));
                         }
                       },
                       child:
